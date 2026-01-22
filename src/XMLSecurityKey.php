@@ -57,6 +57,7 @@ class XMLSecurityKey
     const RSA_OAEP_MGF1P = 'http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p';
     const RSA_OAEP = 'http://www.w3.org/2009/xmlenc11#rsa-oaep';
     const DSA_SHA1 = 'http://www.w3.org/2000/09/xmldsig#dsa-sha1';
+    const DSA_SHA256 = 'http://www.w3.org/2009/xmldsig11#dsa-sha256';
     const RSA_SHA1 = 'http://www.w3.org/2000/09/xmldsig#rsa-sha1';
     const RSA_SHA256 = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256';
     const RSA_SHA384 = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha384';
@@ -69,6 +70,13 @@ class XMLSecurityKey
     const SHA512_RSA_MGF1 = 'http://www.w3.org/2007/05/xmldsig-more#sha512-rsa-MGF1';
     const RSA_SHA256_MGF1 = 'http://www.w3.org/2007/05/xmldsig-more#sha256-rsa-MGF1';
     const RSA_SHA512_MGF1 = 'http://www.w3.org/2007/05/xmldsig-more#sha512-rsa-MGF1';
+    
+    // ECDSA Konstanten
+    const ECDSA_SHA1 = 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1';
+    const ECDSA_SHA256 = 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256';
+    const ECDSA_SHA384 = 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384';
+    const ECDSA_SHA512 = 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512';
+    
     const AUTHTAG_LENGTH = 16;
 
     /** @var array */
@@ -213,6 +221,28 @@ class XMLSecurityKey
                     }
                 }
                 throw new Exception('Certificate "type" (private/public) must be passed via parameters');
+            case (self::DSA_SHA1):
+                $this->cryptParams['library'] = 'openssl';
+                $this->cryptParams['method'] = 'http://www.w3.org/2000/09/xmldsig#dsa-sha1';
+                $this->cryptParams['digest'] = 'SHA1';
+                if (is_array($params) && ! empty($params['type'])) {
+                    if ($params['type'] == 'public' || $params['type'] == 'private') {
+                        $this->cryptParams['type'] = $params['type'];
+                        break;
+                    }
+                }
+                throw new Exception('Certificate "type" (private/public) must be passed via parameters');
+            case (self::DSA_SHA256):
+                $this->cryptParams['library'] = 'openssl';
+                $this->cryptParams['method'] = 'http://www.w3.org/2009/xmldsig11#dsa-sha256';
+                $this->cryptParams['digest'] = 'SHA256';
+                if (is_array($params) && ! empty($params['type'])) {
+                    if ($params['type'] == 'public' || $params['type'] == 'private') {
+                        $this->cryptParams['type'] = $params['type'];
+                        break;
+                    }
+                }
+                throw new Exception('Certificate "type" (private/public) must be passed via parameters');
             case (self::RSA_SHA1):
                 $this->cryptParams['library'] = 'openssl';
                 $this->cryptParams['method'] = 'http://www.w3.org/2000/09/xmldsig#rsa-sha1';
@@ -274,7 +304,6 @@ class XMLSecurityKey
                         break;
                     }
                 }
-
                 break;
             case (self::RSA_SHA512_MGF1):
                 // CHANGED FOR RSASSA_PSS HACK
@@ -286,8 +315,55 @@ class XMLSecurityKey
                         break;
                     }
                 }
-
                 break;
+            case (self::ECDSA_SHA1):
+                $this->cryptParams['library'] = 'openssl';
+                $this->cryptParams['method'] = 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha1';
+                $this->cryptParams['digest'] = 'SHA1';
+                $this->cryptParams['curve'] = 'EC';
+                if (is_array($params) && ! empty($params['type'])) {
+                    if ($params['type'] == 'public' || $params['type'] == 'private') {
+                        $this->cryptParams['type'] = $params['type'];
+                        break;
+                    }
+                }
+                throw new Exception('Certificate "type" (private/public) must be passed via parameters');
+            case (self::ECDSA_SHA256):
+                $this->cryptParams['library'] = 'openssl';
+                $this->cryptParams['method'] = 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256';
+                $this->cryptParams['digest'] = 'SHA256';
+                $this->cryptParams['curve'] = 'EC';
+                if (is_array($params) && ! empty($params['type'])) {
+                    if ($params['type'] == 'public' || $params['type'] == 'private') {
+                        $this->cryptParams['type'] = $params['type'];
+                        break;
+                    }
+                }
+                throw new Exception('Certificate "type" (private/public) must be passed via parameters');
+            case (self::ECDSA_SHA384):
+                $this->cryptParams['library'] = 'openssl';
+                $this->cryptParams['method'] = 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384';
+                $this->cryptParams['digest'] = 'SHA384';
+                $this->cryptParams['curve'] = 'EC';
+                if (is_array($params) && ! empty($params['type'])) {
+                    if ($params['type'] == 'public' || $params['type'] == 'private') {
+                        $this->cryptParams['type'] = $params['type'];
+                        break;
+                    }
+                }
+                throw new Exception('Certificate "type" (private/public) must be passed via parameters');
+            case (self::ECDSA_SHA512):
+                $this->cryptParams['library'] = 'openssl';
+                $this->cryptParams['method'] = 'http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512';
+                $this->cryptParams['digest'] = 'SHA512';
+                $this->cryptParams['curve'] = 'EC';
+                if (is_array($params) && ! empty($params['type'])) {
+                    if ($params['type'] == 'public' || $params['type'] == 'private') {
+                        $this->cryptParams['type'] = $params['type'];
+                        break;
+                    }
+                }
+                throw new Exception('Certificate "type" (private/public) must be passed via parameters');
             default:
                 throw new Exception('Invalid Key Type');
         }
@@ -594,6 +670,12 @@ class XMLSecurityKey
         if (! openssl_sign($data, $signature, $this->key, $algo)) {
             throw new Exception('Failure Signing Data: ' . openssl_error_string() . ' - ' . $algo);
         }
+        
+        // Für ECDSA: Konvertiere DER-Signatur in XML-Signatur-Format (r||s)
+        if (isset($this->cryptParams['curve']) && $this->cryptParams['curve'] === 'EC') {
+            $signature = $this->convertDerToXmlSignature($signature);
+        }
+        
         return $signature;
     }
 
@@ -619,7 +701,111 @@ class XMLSecurityKey
         if (! empty($this->cryptParams['digest'])) {
             $algo = $this->cryptParams['digest'];
         }
+        
+        // Für ECDSA: Konvertiere XML-Signatur-Format (r||s) zurück zu DER
+        if (isset($this->cryptParams['curve']) && $this->cryptParams['curve'] === 'EC') {
+            $signature = $this->convertXmlSignatureToDer($signature);
+        }
+        
         return openssl_verify($data, $signature, $this->key, $algo);
+    }
+
+    /**
+     * Konvertiert eine DER-kodierte ECDSA-Signatur in das XML-Signatur-Format (r||s)
+     *
+     * @param string $derSignature
+     * @return string
+     */
+    private function convertDerToXmlSignature($derSignature)
+    {
+        // Parse DER structure: SEQUENCE { INTEGER r, INTEGER s }
+        $offset = 0;
+        
+        // Skip SEQUENCE tag and length
+        if (ord($derSignature[$offset++]) !== 0x30) {
+            return $derSignature; // Nicht DER-kodiert, unverändert zurückgeben
+        }
+        
+        $sequenceLength = ord($derSignature[$offset++]);
+        if ($sequenceLength > 127) {
+            $lengthBytes = $sequenceLength & 0x7f;
+            $offset += $lengthBytes;
+        }
+        
+        // Parse r INTEGER
+        if (ord($derSignature[$offset++]) !== 0x02) {
+            return $derSignature;
+        }
+        $rLength = ord($derSignature[$offset++]);
+        $r = substr($derSignature, $offset, $rLength);
+        $offset += $rLength;
+        
+        // Parse s INTEGER
+        if (ord($derSignature[$offset++]) !== 0x02) {
+            return $derSignature;
+        }
+        $sLength = ord($derSignature[$offset++]);
+        $s = substr($derSignature, $offset, $sLength);
+        
+        // Entferne führende Null-Bytes (die nur für positive Zahlen in DER benötigt werden)
+        $r = ltrim($r, "\x00");
+        $s = ltrim($s, "\x00");
+        
+        // Bestimme die Länge basierend auf dem Digest-Algorithmus
+        $componentLength = 32; // Standard für SHA256
+        if (!empty($this->cryptParams['digest'])) {
+            switch ($this->cryptParams['digest']) {
+                case 'SHA384':
+                    $componentLength = 48;
+                    break;
+                case 'SHA512':
+                    $componentLength = 66;
+                    break;
+                case 'SHA1':
+                    $componentLength = 20;
+                    break;
+            }
+        }
+        
+        // Fülle auf die richtige Länge auf
+        $r = str_pad($r, $componentLength, "\x00", STR_PAD_LEFT);
+        $s = str_pad($s, $componentLength, "\x00", STR_PAD_LEFT);
+        
+        return $r . $s;
+    }
+
+    /**
+     * Konvertiert eine XML-Signatur (r||s) zurück in das DER-Format
+     *
+     * @param string $xmlSignature
+     * @return string
+     */
+    private function convertXmlSignatureToDer($xmlSignature)
+    {
+        $length = strlen($xmlSignature);
+        $componentLength = $length / 2;
+        
+        $r = substr($xmlSignature, 0, $componentLength);
+        $s = substr($xmlSignature, $componentLength);
+        
+        // Entferne führende Null-Bytes
+        $r = ltrim($r, "\x00");
+        $s = ltrim($s, "\x00");
+        
+        // Füge führendes Null-Byte hinzu, wenn das höchste Bit gesetzt ist (für positive Zahl in DER)
+        if (ord($r[0]) > 0x7f) {
+            $r = "\x00" . $r;
+        }
+        if (ord($s[0]) > 0x7f) {
+            $s = "\x00" . $s;
+        }
+        
+        // Baue DER-Struktur
+        $rDer = "\x02" . chr(strlen($r)) . $r;
+        $sDer = "\x02" . chr(strlen($s)) . $s;
+        $sequence = $rDer . $sDer;
+        
+        return "\x30" . chr(strlen($sequence)) . $sequence;
     }
 
     /**
